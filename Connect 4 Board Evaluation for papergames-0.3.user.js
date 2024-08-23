@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Connect 4 Board Evaluation for papergames
 // @namespace    https://github.com/longkidkoolstar
-// @version      0.3
+// @version      0.4
 // @description  Visually shows you the best moves for both teams. Now works at the same time as the AI script I made.
 // @author       longkidkoolstar
 // @license      none
@@ -158,11 +158,13 @@ function simulateCellClick(column) {
     function checkForResetButtons() {
         var playOnlineButton = document.querySelector("button.btn-secondary.flex-grow-1");
         var leaveRoomButton = document.querySelector("button.btn-light.ng-tns-c189-7");
-
-        if (playOnlineButton || leaveRoomButton) {
+        var customResetButton = document.querySelector("button.btn.btn-outline-dark.ng-tns-c497539356-18.ng-star-inserted");
+    
+        if (playOnlineButton || leaveRoomButton || customResetButton) {
             resetVariables();
         }
     }
+
     //Checking If the game is over so it can reset variables
 setInterval(function() {
     checkForResetButtons();
