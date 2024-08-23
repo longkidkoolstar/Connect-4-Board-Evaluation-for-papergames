@@ -9,20 +9,22 @@
 // @icon         https://i.imgur.com/IQi878N.png
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
 // @grant        GM.xmlHttpRequest
+// @grant        GM.setValue
+// @grant        GM.getValue
 // @downloadURL https://update.greasyfork.org/scripts/499815/Connect%204%20Board%20Evaluation%20for%20papergames.user.js
 // @updateURL https://update.greasyfork.org/scripts/499815/Connect%204%20Board%20Evaluation%20for%20papergames.meta.js
 // ==/UserScript==
 
-(function() {
+(async function() {
     'use strict';
 
-    var username = localStorage.getItem('username');
+    var username = await GM.getValue('username');
     var moveHistory = [];
     var lastBoardState = [];
 
     if (!username) {
         username = prompt('Please enter your Papergames username (case-sensitive):');
-        localStorage.setItem('username', username);
+       await GM.setValue('username', username);
     }
 
 function getBoardState() {
@@ -172,16 +174,16 @@ setInterval(function() {
     //---GUI
 
 // Check if username is stored in local storage
-var username = localStorage.getItem('username');
+var username = await GM.getValue('username');
 
 if (!username) {
     alert('Username is not stored in local storage.');
     username = prompt('Please enter your Papergames username (case-sensitive):');
-    localStorage.setItem('username', username);
+    await GM.setValue('username', username);
 }
 
 function logout() {
-    localStorage.removeItem('username');
+    GM.setValue('username', '');
     location.reload();
 }
 
