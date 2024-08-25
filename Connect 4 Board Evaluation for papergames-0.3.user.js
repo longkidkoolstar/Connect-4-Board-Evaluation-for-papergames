@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Connect 4 Board Evaluation for papergames
 // @namespace    https://github.com/longkidkoolstar
-// @version      0.4
+// @version      0.4.1
 // @description  Visually shows you the best moves for both teams. Now works at the same time as the AI script I made.
 // @author       longkidkoolstar
 // @license      none
@@ -27,43 +27,51 @@
        await GM.setValue('username', username);
     }
 
-function getBoardState() {
-    const boardContainer = document.querySelector(".grid.size6x7");
-    if (!boardContainer) {
-        console.error("Board container not found");
-        return [];
-    }
-
-    let boardState = [];
-
-    for (let row = 0; row < 6; row++) {
-        let rowState = [];
-        for (let col = 0; col < 7; col++) {
-            const cellSelector = `.cell-${row}-${col}`;
-            const cell = boardContainer.querySelector(cellSelector);
-            if (cell) {
-                if (cell.querySelector("circle.circle-dark")) {
-                    rowState.push("R");
-                } else if (cell.querySelector("circle.circle-light")) {
-                    rowState.push("Y");
+    function getBoardState() {
+        const boardContainer = document.querySelector(".grid.size6x7");
+        if (!boardContainer) {
+            console.error("Board container not found");
+            return [];
+        }
+    
+        let boardState = [];
+    
+        // Iterate over cells in a more flexible way
+        for (let row = 1; row <= 6; row++) {
+            let rowState = [];
+            for (let col = 1; col <= 7; col++) {
+                // Use a selector that matches the class names correctly
+                const cellSelector = `.grid-item.cell-${row}-${col}`;
+                const cell = boardContainer.querySelector(cellSelector);
+                if (cell) {
+                    // Check the circle class names to determine the cell's state
+                    const circle = cell.querySelector("circle");
+                    if (circle) {
+                        if (circle.classList.contains("circle-dark")) {
+                            rowState.push("R");
+                        } else if (circle.classList.contains("circle-light")) {
+                            rowState.push("Y");
+                        } else {
+                            rowState.push("E");
+                        }
+                    } else {
+                        rowState.push("E");
+                    }
                 } else {
+                    console.error(`Cell not found: ${cellSelector}`);
                     rowState.push("E");
                 }
-            } else {
-                console.error(`Cell not found: ${cellSelector}`);
-                rowState.push("E");
             }
+            boardState.push(rowState);
         }
-        boardState.push(rowState);
+    
+        return boardState;
     }
-
-    return boardState;
-}
-
+    
     function detectNewMove() {
         const currentBoardState = getBoardState();
         let newMove = false;
-
+    
         for (let row = 0; row < 6; row++) {
             for (let col = 0; col < 7; col++) {
                 if (lastBoardState[row] && lastBoardState[row][col] === 'E' && currentBoardState[row][col] !== 'E') {
@@ -72,10 +80,11 @@ function getBoardState() {
                 }
             }
         }
-
+    
         lastBoardState = currentBoardState;
         return newMove;
     }
+    
 
     function getAPIEvaluation() {
         if (!detectNewMove()) return;
