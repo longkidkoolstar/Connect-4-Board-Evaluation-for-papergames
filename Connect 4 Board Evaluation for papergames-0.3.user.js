@@ -182,16 +182,7 @@ setInterval(function() {
 
     console.log("Modified Connect 4 script loaded and running");
 
-    //---GUI
 
-// Check if username is stored in local storage
-var username = await GM.getValue('username');
-
-if (!username) {
-    alert('Username is not stored in local storage.');
-    username = prompt('Please enter your Papergames username (case-sensitive):');
-    await GM.setValue('username', username);
-}
 
 function logout() {
     GM.setValue('username', '');
